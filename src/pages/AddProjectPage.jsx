@@ -32,6 +32,7 @@ export default function AddProjectPage() {
   // UI State
   const [loading, setLoading] = useState(false);
   const [enhancing, setEnhancing] = useState(false);
+  const [enhanceError, setEnhanceError] = useState(null);
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -59,16 +60,25 @@ export default function AddProjectPage() {
   const handleEnhance = async () => {
     if (!description.trim()) return;
     setEnhancing(true);
+    setEnhanceError(null);
     try {
       const { data, error } = await supabase.functions.invoke('enhance-description', {
-        body: { description }
+        body: { description: description }
       });
+      
+      console.log('enhance response:', data, error);
+
       if (error) throw error;
+      
       if (data?.enhanced) {
         setDescription(data.enhanced);
+      } else {
+        console.log('no enhanced field in response:', data);
+        setEnhanceError('Failed to enhance description. Try again.');
       }
     } catch (err) {
       console.error("Error enhancing description:", err);
+      setEnhanceError(err.message || 'An error occurred while enhancing.');
     } finally {
       setEnhancing(false);
     }
@@ -278,6 +288,7 @@ export default function AddProjectPage() {
                   ✨ {enhancing ? 'Enhancing...' : 'Enhance with Gemini'}
                 </button>
               </div>
+              {enhanceError && <p style={{ color: '#ef4444', fontSize: '13px' }} className="mt-2">{enhanceError}</p>}
             </motion.div>
 
             {/* Certificate Upload */}

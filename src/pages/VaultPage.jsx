@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { getUserProjects } from '../lib/projects';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import CertificatePreview from '../components/CertificatePreview';
 
 function ProjectCard({ project, index }) {
   const navigate = useNavigate();
@@ -19,19 +20,11 @@ function ProjectCard({ project, index }) {
       className="group relative flex flex-col bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:border-[rgba(99,102,241,0.5)] hover:shadow-[0_20px_60px_rgba(99,102,241,0.15)] hover:bg-[rgba(255,255,255,0.07)]"
     >
       {/* 1. CERTIFICATE PREVIEW */}
-      <div className="relative w-full h-[180px] overflow-hidden bg-[#111]">
-        {isPdf ? (
-          <div className="w-full h-full bg-gradient-to-br from-[rgba(99,102,241,0.2)] to-[rgba(139,92,246,0.2)] flex flex-col items-center justify-center">
-            <span className="text-[48px] mb-2 drop-shadow-md">📄</span>
-            <span className="text-[#a5b4fc] text-sm font-medium">PDF Certificate</span>
-          </div>
-        ) : (
-          <img 
-            src={project.certificate_url} 
-            alt={project.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        )}
+      <div className="relative w-full h-[180px] overflow-hidden bg-[#111] rounded-t-2xl">
+        <CertificatePreview
+          url={project.certificate_url}
+          isImage={!isPdf}
+        />
         
         {/* Badge */}
         {project.competition_name && (
