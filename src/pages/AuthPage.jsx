@@ -12,22 +12,16 @@ export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
 
   useEffect(() => {
-    // Check if returning from OAuth redirect
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate('/vault')
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth event:', event, 'Session:', session)
+        if (session) {
+          window.location.href = '/vault'
+        }
       }
-    })
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        navigate('/vault')
-      }
-    })
-
+    )
     return () => subscription.unsubscribe()
-  }, [navigate]);
+  }, [])
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -72,21 +66,14 @@ export default function AuthPage() {
   };
 
   const handleGoogleAuth = async () => {
-    setLoading(true);
-    setError(null);
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://my-proof-of-work.vercel.app/vault',
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        }
+        redirectTo: 'https://my-proof-of-work.vercel.app/auth',
       }
-    });
-    if (error) setError(error.message);
-    setLoading(false);
-  };
+    })
+    console.log('OAuth data:', data, 'error:', error)
+  }
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-[#0a0a0f]">
