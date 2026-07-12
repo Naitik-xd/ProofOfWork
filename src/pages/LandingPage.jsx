@@ -131,10 +131,15 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-xs text-gray-500 flex items-center gap-4 pointer-events-auto"
+          className="absolute bottom-0 left-0 right-0 p-6 sm:px-8 border-t border-[rgba(255,255,255,0.06)] flex flex-col sm:flex-row justify-between items-center gap-4 bg-[rgba(10,10,15,0.8)] backdrop-blur-[12px] pointer-events-auto"
         >
-          <span>Free forever. No credit card.</span>
-          <a href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
+          <div className="text-[#555] text-[13px]">
+            © 2026 Proof of Work. Built by Naitik.
+          </div>
+          <div className="flex items-center gap-6">
+            <a href="/privacy" className="text-[#555] text-[13px] hover:text-[#a5b4fc] transition-colors">Privacy Policy</a>
+            <span className="text-[#333] text-[13px] font-mono hidden sm:inline">my-proof-of-work.vercel.app</span>
+          </div>
         </motion.div>
       </div>
     </div>

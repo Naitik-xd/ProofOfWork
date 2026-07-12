@@ -19,57 +19,75 @@ export default function PrivacyPage() {
         </Canvas>
       </div>
 
-      <div className="relative z-10 w-full min-h-screen flex flex-col items-center pt-[100px] px-8 pb-[100px]">
-        <div className="w-full max-w-[700px]">
-          <Link 
-            to="/" 
-            className="text-gray-400 hover:text-white text-sm transition-colors flex items-center gap-2 mb-8"
-          >
-            <span>&larr;</span> Back to Home
+      <div className="relative z-10 w-full min-h-screen flex flex-col">
+        {/* Top Bar */}
+        <div className="fixed top-0 left-0 right-0 z-50 bg-[rgba(10,10,15,0.8)] backdrop-blur-[12px] border-b border-[rgba(255,255,255,0.06)] px-8 py-4 flex items-center justify-between">
+          <Link to="/" className="text-[#a5b4fc] hover:text-white transition-colors text-sm font-medium">
+            &larr; Back to Home
           </Link>
-          
-          <div className="bg-[rgba(255,255,255,0.03)] backdrop-blur-[12px] border border-[rgba(255,255,255,0.06)] rounded-2xl p-8 md:p-12 shadow-2xl text-gray-300 leading-relaxed">
-            <h1 className="text-white font-bold text-3xl mb-8">Privacy Policy</h1>
+          <div className="font-mono text-white tracking-wide text-sm font-semibold">
+            Proof of Work
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="pt-[100px] px-8 pb-[60px] max-w-[720px] w-full mx-auto flex-1 flex flex-col">
+          <div className="bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] rounded-[16px] p-12">
+            <p className="text-[#888] text-[13px] mb-4">Last updated: July 12, 2026</p>
+            <h1 className="text-white font-bold text-[32px] leading-none mb-2">Privacy Policy</h1>
+            <p className="text-[#888] text-[16px]">We keep it simple and transparent.</p>
             
-            <section className="mb-8">
-              <h2 className="text-white font-semibold text-xl mb-3">What data we collect</h2>
-              <ul className="list-disc pl-5 space-y-2 text-[#aaa]">
-                <li><strong>Email Address:</strong> Used strictly for authentication.</li>
-                <li><strong>Username:</strong> Used to generate your personalized public profile link.</li>
-                <li><strong>Uploaded Certificates:</strong> Any PDFs or images you upload are stored securely for displaying your proof of work.</li>
-              </ul>
-            </section>
+            <div className="border-b border-[rgba(255,255,255,0.06)] my-6"></div>
 
-            <section className="mb-8">
-              <h2 className="text-white font-semibold text-xl mb-3">How we use it</h2>
-              <p className="text-[#aaa]">
-                We only use your data to power your personal Vault and public profile. We do not sell your data, use it for advertising, or share it unconditionally. You have full control over what is visible publicly via the Settings page.
-              </p>
-            </section>
+            <h2 className="text-[#a5b4fc] text-[16px] font-semibold mt-8 mb-3 tracking-[0.05em]">1. What is Proof of Work?</h2>
+            <p className="text-[#ccc] text-[15px] leading-[1.8]">
+              Proof of Work is a personal portfolio platform that allows developers, students, and competition enthusiasts to preserve and showcase their participation certificates and competition projects in one place.
+            </p>
 
-            <section className="mb-8">
-              <h2 className="text-white font-semibold text-xl mb-3">Third Parties</h2>
-              <p className="text-[#aaa] mb-2">We rely on trusted third parties to run the infrastructure:</p>
-              <ul className="list-disc pl-5 space-y-2 text-[#aaa]">
-                <li><strong>Supabase:</strong> For database, storage, and authentication (Google OAuth).</li>
-                <li><strong>Google Gemini API:</strong> For the "Enhance" project description feature.</li>
-                <li><strong>Vercel:</strong> For hosting and analytics.</li>
-              </ul>
-            </section>
-            
-            <section className="mb-8">
-              <h2 className="text-white font-semibold text-xl mb-3">Data Deletion</h2>
-              <p className="text-[#aaa]">
-                You have full control over your data. You can delete any of your projects directly from your Vault at any time. When you delete a project, its associated certificate is permanently deleted from our servers.
-              </p>
-            </section>
+            <h2 className="text-[#a5b4fc] text-[16px] font-semibold mt-8 mb-3 tracking-[0.05em]">2. What Data We Collect</h2>
+            <ul className="list-disc pl-5 text-[#ccc] text-[15px] leading-[1.8] space-y-1">
+              <li>Your email address (via Google OAuth or email signup)</li>
+              <li>Your chosen username</li>
+              <li>Project details you enter: title, competition name, date, project URL, description</li>
+              <li>Certificate files you upload (images or PDFs)</li>
+              <li>Basic usage analytics (page views, performance metrics via Vercel Analytics)</li>
+            </ul>
 
-            <section>
-              <h2 className="text-white font-semibold text-xl mb-3">Contact</h2>
-              <p className="text-[#aaa]">
-                If you have any questions about this privacy policy, please contact us at: <a href="mailto:privacy@proofofwork.com" className="text-[#a5b4fc] hover:underline">privacy@proofofwork.com</a>
-              </p>
-            </section>
+            <h2 className="text-[#a5b4fc] text-[16px] font-semibold mt-8 mb-3 tracking-[0.05em]">3. How We Use Your Data</h2>
+            <ul className="list-disc pl-5 text-[#ccc] text-[15px] leading-[1.8] space-y-1">
+              <li>To display your personal vault and public profile</li>
+              <li>To authenticate you securely via Supabase Auth</li>
+              <li>To store and serve your uploaded certificates via Supabase Storage</li>
+              <li>To improve your project descriptions via Gemini AI (text only, not stored by us)</li>
+              <li>To monitor site performance via Vercel Analytics</li>
+            </ul>
+
+            <h2 className="text-[#a5b4fc] text-[16px] font-semibold mt-8 mb-3 tracking-[0.05em]">4. Third Party Services</h2>
+            <div className="space-y-2">
+              <div className="text-[15px]"><span className="text-[#a5b4fc] font-medium">Supabase</span> <span className="text-[#ccc]">— authentication, database, and file storage (supabase.com)</span></div>
+              <div className="text-[15px]"><span className="text-[#a5b4fc] font-medium">Google OAuth</span> <span className="text-[#ccc]">— sign in with Google (google.com)</span></div>
+              <div className="text-[15px]"><span className="text-[#a5b4fc] font-medium">Google Gemini API</span> <span className="text-[#ccc]">— AI description enhancement (ai.google.dev)</span></div>
+              <div className="text-[15px]"><span className="text-[#a5b4fc] font-medium">Vercel</span> <span className="text-[#ccc]">— hosting and analytics (vercel.com)</span></div>
+            </div>
+
+            <h2 className="text-[#a5b4fc] text-[16px] font-semibold mt-8 mb-3 tracking-[0.05em]">5. Your Rights</h2>
+            <ul className="list-disc pl-5 text-[#ccc] text-[15px] leading-[1.8] space-y-1">
+              <li>You can delete any project from your vault at any time</li>
+              <li>You can update your username and privacy settings anytime</li>
+              <li>You can control what is visible on your public profile</li>
+              <li>To request full account deletion, contact us at the email below</li>
+            </ul>
+
+            <h2 className="text-[#a5b4fc] text-[16px] font-semibold mt-8 mb-3 tracking-[0.05em]">6. Data Security</h2>
+            <p className="text-[#ccc] text-[15px] leading-[1.8]">
+              Your data is stored securely on Supabase infrastructure with row-level security (RLS) enabled. Certificate files are stored in a secured storage bucket. We never sell your data to third parties.
+            </p>
+
+            <h2 className="text-[#a5b4fc] text-[16px] font-semibold mt-8 mb-3 tracking-[0.05em]">7. Contact</h2>
+            <p className="text-[#ccc] text-[15px] leading-[1.8]">
+              For any privacy concerns or data deletion requests:<br />
+              Email: <a href="mailto:naitik.270810@gmail.com" style={{color: '#6366f1'}}>naitik.270810@gmail.com</a>
+            </p>
           </div>
         </div>
       </div>
