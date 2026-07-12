@@ -46,6 +46,10 @@ export default function SettingsPage() {
     show_competition_name: true,
     show_date: true
   });
+  
+  const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState(null);
+  const [usernameSuccess, setUsernameSuccess] = useState(null);
 
   useEffect(() => {
     async function loadSettings() {
@@ -69,6 +73,7 @@ export default function SettingsPage() {
           show_competition_name: profile.show_competition_name ?? true,
           show_date: profile.show_date ?? true
         });
+        setUsername(profile.username || '');
       }
       setLoading(false);
     }
@@ -80,6 +85,42 @@ export default function SettingsPage() {
       ...prev,
       [key]: !prev[key]
     }));
+  };
+
+  const handleUpdateUsername = async () => {
+    setUsernameError(null);
+    setUsernameSuccess(null);
+    const newUsername = username.trim();
+    
+    if (!/^[a-zA-Z0-9_-]{3,30}$/.test(newUsername)) {
+      setUsernameError('Username can only contain letters, numbers, _ and - (3-30 chars)');
+      return;
+    }
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('username', newUsername)
+      .single();
+      
+    if (existingProfile && existingProfile.id !== session.user.id) {
+      setUsernameError('Username already taken');
+      return;
+    }
+    
+    const { error } = await supabase
+      .from('profiles')
+      .update({ username: newUsername })
+      .eq('id', session.user.id);
+      
+    if (error) {
+      setUsernameError(error.message);
+    } else {
+      setUsernameSuccess('Username updated ✓');
+      setTimeout(() => setUsernameSuccess(null), 3000);
+    }
   };
 
   const handleSave = async () => {
@@ -134,6 +175,36 @@ export default function SettingsPage() {
           </Link>
           
           <div className="bg-[rgba(255,255,255,0.05)] backdrop-blur-[12px] border border-[rgba(255,255,255,0.1)] rounded-2xl p-8 shadow-2xl">
+            {/* Profile Section */}
+            <h2 className="text-white font-bold text-[16px] mb-4">Profile</h2>
+            <div className="mb-6">
+              <label className="block text-[#888] text-[12px] uppercase tracking-wide mb-1.5 font-semibold">
+                Username
+              </label>
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="flex-1 px-4 py-2.5 bg-[rgba(255,255,255,0.07)] border border-[rgba(255,255,255,0.15)] rounded-lg text-white placeholder-[#555] focus:outline-none focus:border-[#6366f1] transition-colors"
+                />
+                <button
+                  onClick={handleUpdateUsername}
+                  className="px-5 py-2.5 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white rounded-lg text-sm font-semibold hover:shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all shrink-0"
+                >
+                  Update Username
+                </button>
+              </div>
+              <p className="text-[#a5b4fc] text-[12px] font-mono mt-2">
+                Your public profile: proof-of-work.vercel.app/u/{username || '[username]'}
+              </p>
+              {usernameError && <p className="text-red-500 text-xs mt-2">{usernameError}</p>}
+              {usernameSuccess && <p className="text-[#10b981] text-xs mt-2">{usernameSuccess}</p>}
+            </div>
+
+            <div className="h-[1px] bg-[rgba(255,255,255,0.06)] w-full mb-8"></div>
+
+            {/* Privacy Section */}
             <h1 className="text-white font-bold text-[24px] mb-1">Privacy Settings</h1>
             <p className="text-[#888] text-[14px] mb-8">Control what others see on your public profile</p>
             

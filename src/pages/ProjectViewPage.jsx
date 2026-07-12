@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
 import * as pdfjsLib from 'pdfjs-dist';
+import html2canvas from 'html2canvas';
 
 // External link icon
 const ExternalLinkIcon = () => (
@@ -12,6 +13,16 @@ const ExternalLinkIcon = () => (
     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
     <polyline points="15 3 21 3 21 9"></polyline>
     <line x1="10" y1="14" x2="21" y2="3"></line>
+  </svg>
+);
+
+const ShareIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="18" cy="5" r="3"></circle>
+    <circle cx="6" cy="12" r="3"></circle>
+    <circle cx="18" cy="19" r="3"></circle>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
   </svg>
 );
 
@@ -145,6 +156,11 @@ export default function ProjectViewPage() {
   const [copied, setCopied] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
+  
+  // Share Modal State
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const shareCardRef = useRef(null);
 
   useEffect(() => {
     async function loadProject() {
@@ -171,6 +187,29 @@ export default function ProjectViewPage() {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownloadCard = async () => {
+    if (!shareCardRef.current || isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const canvas = await html2canvas(shareCardRef.current, {
+        width: 1200,
+        height: 630,
+        scale: 1,
+        useCORS: true,
+        backgroundColor: '#0a0a0f'
+      });
+      const link = document.createElement('a');
+      link.download = (project.title || 'Project').replace(/\s+/g, '-') + '-proof-of-work.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      console.error("Failed to download image:", err);
+      alert("Failed to generate image");
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   if (loading) {
@@ -205,6 +244,7 @@ export default function ProjectViewPage() {
 
   return (
     <div className="relative w-screen min-h-screen bg-[#0a0a0f] overflow-x-hidden">
+      
       {/* 3D Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Canvas camera={{ position: [0, 0, 10], fov: 60 }}>
@@ -315,50 +355,151 @@ export default function ProjectViewPage() {
                 </div>
               </div>
 
-              {/* LINKS */}
+              {/* SHARE AND LINKS */}
               <div>
                 <h3 className="text-[#888] text-[11px] uppercase tracking-[0.1em] font-semibold mb-2">
-                  Links
+                  Share & Links
                 </h3>
+                
+                <button
+                  onClick={() => setShareModalOpen(true)}
+                  className="w-full flex items-center justify-center gap-2 bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.1)] rounded-[10px] p-3 text-white text-[14px] font-medium hover:bg-[rgba(255,255,255,0.1)] transition-colors mb-2"
+                >
+                  <ShareIcon /> Share Project
+                </button>
+
                 {project.project_url && (
                   <button
                     onClick={() => window.open(project.project_url, '_blank')}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white rounded-lg py-3 px-4 text-[14px] font-semibold hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all"
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white rounded-lg py-3 px-4 text-[14px] font-semibold hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all mb-2"
                   >
                     <ExternalLinkIcon /> View Live Project
                   </button>
                 )}
+                
                 <button
                   onClick={() => window.open(project.certificate_url, '_blank')}
-                  className={`w-full bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.1)] rounded-lg py-3 px-4 text-white text-[14px] font-medium hover:bg-[rgba(255,255,255,0.1)] transition-colors ${project.project_url ? 'mt-2' : ''}`}
+                  className={`w-full bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.1)] rounded-lg py-3 px-4 text-white text-[14px] font-medium hover:bg-[rgba(255,255,255,0.1)] transition-colors`}
                 >
                   View Certificate
                 </button>
               </div>
 
-              {/* SHARE */}
-              <div>
-                <h3 className="text-[#888] text-[11px] uppercase tracking-[0.1em] font-semibold mb-2">
-                  Share
-                </h3>
-                <p className="text-[#888] text-[13px] mb-2">
-                  Public link to this project:
-                </p>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] rounded-lg p-2.5 text-[#a5b4fc] text-[13px] font-mono overflow-hidden whitespace-nowrap text-ellipsis">
-                    {window.location.href}
-                  </div>
-                  <button
-                    onClick={handleCopyLink}
-                    className="shrink-0 border border-[#6366f1] text-[#a5b4fc] rounded-lg px-3 py-2.5 text-[13px] font-medium hover:bg-[rgba(99,102,241,0.1)] transition-colors w-[80px] text-center"
-                  >
-                    {copied ? 'Copied ✓' : 'Copy Link'}
-                  </button>
-                </div>
-              </div>
-
             </motion.div>
           </motion.div>
+        </div>
+      </div>
+
+      {/* SHARE MODAL */}
+      <AnimatePresence>
+        {shareModalOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-[rgba(10,10,20,0.97)] backdrop-blur-[20px]"
+          >
+            <div className="relative w-full max-w-[480px] bg-transparent border border-[rgba(255,255,255,0.1)] rounded-[20px] p-8 shadow-2xl">
+              <h2 className="text-white font-bold text-[18px] mb-6 text-center">Share Project</h2>
+              
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={handleDownloadCard}
+                  disabled={isDownloading}
+                  className="w-full py-3 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white font-medium hover:shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-shadow disabled:opacity-50"
+                >
+                  {isDownloading ? 'Generating Image...' : 'Download Card'}
+                </button>
+                
+                <button 
+                  onClick={handleCopyLink}
+                  className="w-full py-3 rounded-lg border border-[#6366f1] text-[#a5b4fc] font-medium hover:bg-[rgba(99,102,241,0.1)] transition-colors"
+                >
+                  {copied ? 'Copied ✓' : 'Copy Link'}
+                </button>
+                
+                <button 
+                  onClick={() => setShareModalOpen(false)}
+                  className="w-full py-3 rounded-lg border border-[rgba(255,255,255,0.2)] text-white font-medium hover:bg-[rgba(255,255,255,0.05)] transition-colors mt-2"
+                >
+                  Close
+                </button>
+              </div>
+
+              <p className="text-[#888] text-[13px] text-center mt-6">
+                💡 Use the downloaded image as your LinkedIn post cover
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* HIDDEN SHARE CARD (For html2canvas capture) */}
+      <div 
+        ref={shareCardRef}
+        style={{
+          width: '1200px',
+          height: '630px',
+          position: 'absolute',
+          left: '-9999px',
+          top: 0,
+          background: 'linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 50%, #0a0a1f 100%)',
+          border: '1px solid rgba(99,102,241,0.3)',
+          padding: '60px',
+          display: 'flex',
+          gap: '60px',
+          alignItems: 'center',
+          boxSizing: 'border-box'
+        }}
+      >
+        {/* Left Side (Certificate Preview) */}
+        <div style={{ width: '40%', height: '400px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
+          {isPdf ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+              <span style={{ fontSize: '64px' }}>📄</span>
+              <span style={{ color: '#888', fontSize: '20px', fontWeight: 'bold' }}>PDF Certificate</span>
+            </div>
+          ) : (
+            <img src={project.certificate_url} alt="Certificate" style={{ width: '100%', height: '100%', objectFit: 'cover' }} crossOrigin="anonymous" />
+          )}
+        </div>
+        
+        {/* Right Side (Details) */}
+        <div style={{ width: '60%', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ 
+            background: 'rgba(99,102,241,0.2)', 
+            border: '1px solid rgba(99,102,241,0.4)',
+            borderRadius: '20px', 
+            padding: '4px 14px', 
+            color: '#a5b4fc', 
+            fontSize: '14px',
+            alignSelf: 'flex-start',
+            fontWeight: '600'
+          }}>
+            Proof of Work
+          </div>
+          
+          <h1 style={{ color: 'white', fontWeight: 'bold', fontSize: '42px', lineHeight: '1.2', margin: '20px 0 12px', wordWrap: 'break-word' }}>
+            {project.title}
+          </h1>
+          
+          {project.competition_name && (
+            <h2 style={{ color: '#a5b4fc', fontSize: '20px', margin: '0' }}>
+              {project.competition_name}
+            </h2>
+          )}
+          
+          <p style={{ color: '#888', fontSize: '16px', marginTop: '8px' }}>
+            {project.date}
+          </p>
+          
+          <p style={{ color: '#ccc', fontSize: '16px', lineHeight: '1.6', marginTop: '20px', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {project.description}
+          </p>
+
+          <p style={{ color: '#555', fontFamily: 'monospace', fontSize: '14px', marginTop: 'auto', paddingTop: '40px' }}>
+            my-proof-of-work.vercel.app
+          </p>
         </div>
       </div>
 
