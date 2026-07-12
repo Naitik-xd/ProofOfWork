@@ -131,9 +131,10 @@ export default function LandingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-xs text-gray-500"
+          className="text-xs text-gray-500 flex items-center gap-4 pointer-events-auto"
         >
-          Free forever. No credit card.
+          <span>Free forever. No credit card.</span>
+          <a href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
         </motion.div>
       </div>
     </div>

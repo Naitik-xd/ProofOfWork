@@ -11,6 +11,7 @@ import AddProjectPage from './pages/AddProjectPage';
 import ProjectViewPage from './pages/ProjectViewPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import PrivacyPage from './pages/PrivacyPage';
 
 function App() {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/u/:username" element={<PublicProfilePage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/settings" element={
           <ProtectedRoute>
             <SettingsPage />
