@@ -8,6 +8,7 @@ export default function CertificatePreview({ url, isImage }) {
   const canvasRef = useRef(null);
   const [loading, setLoading] = useState(!isImage);
   const [error, setError] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (isImage || !url) return;
@@ -65,11 +66,32 @@ export default function CertificatePreview({ url, isImage }) {
   }, [url, isImage]);
 
   if (isImage) {
+    if (imageError) {
+      return (
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))',
+          height: '180px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          gap: '8px'
+        }}>
+          <span style={{ fontSize: '32px' }}>🖼️</span>
+          <span style={{ color: '#888', fontSize: '13px' }}>Certificate unavailable</span>
+        </div>
+      );
+    }
+
     return (
       <img 
         src={url} 
         alt="Certificate"
         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        onError={(e) => {
+          e.target.style.display = 'none';
+          setImageError(true);
+        }}
       />
     );
   }
@@ -90,9 +112,17 @@ export default function CertificatePreview({ url, isImage }) {
       )}
 
       {error && (
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-[rgba(99,102,241,0.2)] to-[rgba(139,92,246,0.2)] flex flex-col items-center justify-center">
-          <span className="text-[48px] mb-2 drop-shadow-md">📄</span>
-          <span className="text-[#a5b4fc] text-sm font-medium">PDF Certificate</span>
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))',
+          height: '180px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          gap: '8px'
+        }}>
+          <span style={{ fontSize: '32px' }}>🖼️</span>
+          <span style={{ color: '#888', fontSize: '13px' }}>Certificate unavailable</span>
         </div>
       )}
     </div>

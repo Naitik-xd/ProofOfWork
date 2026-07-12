@@ -30,6 +30,26 @@ import { Canvas } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
 import CertificatePreview from '../components/CertificatePreview';
 
+class ProjectErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ProjectCard error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
+
 function ProjectCard({ project, index, profile }) {
   const navigate = useNavigate();
   const isPdf = project.certificate_url?.toLowerCase().endsWith('.pdf');
@@ -263,7 +283,9 @@ export default function PublicProfilePage() {
             <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6">
               <AnimatePresence>
                 {projects.map((project, index) => (
-                  <ProjectCard key={project.id} project={project} index={index} profile={profile} />
+                  <ProjectErrorBoundary key={project.id}>
+                    <ProjectCard project={project} index={index} profile={profile} />
+                  </ProjectErrorBoundary>
                 ))}
               </AnimatePresence>
             </div>

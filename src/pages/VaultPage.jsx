@@ -7,6 +7,26 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import CertificatePreview from '../components/CertificatePreview';
 
+class ProjectErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ProjectCard error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
+
 function ProjectCard({ project, index }) {
   const navigate = useNavigate();
   
@@ -89,21 +109,26 @@ export default function VaultPage() {
 
   useEffect(() => {
     async function loadData() {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('id', user.id)
-          .single();
-        setProfile(profile);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+        
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('id', user.id)
+            .single();
+          setProfile(profile);
 
-        const { data } = await getUserProjects(user.id);
-        setProjects(data || []);
+          const { data } = await getUserProjects(user.id);
+          setProjects(data || []);
+        }
+      } catch (err) {
+        console.error("Failed to load vault data:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     loadData();
   }, []);
@@ -252,7 +277,9 @@ export default function VaultPage() {
             <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
               <AnimatePresence>
                 {projects.map((project, index) => (
-                  <ProjectCard key={project.id} project={project} index={index} />
+                  <ProjectErrorBoundary key={project.id}>
+                    <ProjectCard project={project} index={index} />
+                  </ProjectErrorBoundary>
                 ))}
               </AnimatePresence>
             </div>

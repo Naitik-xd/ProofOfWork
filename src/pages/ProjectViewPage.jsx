@@ -102,9 +102,17 @@ function FullPdfViewer({ url }) {
 
   if (error) {
     return (
-      <div className="w-full h-[180px] bg-gradient-to-br from-[rgba(99,102,241,0.2)] to-[rgba(139,92,246,0.2)] flex flex-col items-center justify-center">
-        <span className="text-[48px] mb-2 drop-shadow-md">📄</span>
-        <span className="text-[#a5b4fc] text-sm font-medium">Failed to load PDF</span>
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))',
+        height: '180px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '8px'
+      }}>
+        <span style={{ fontSize: '32px' }}>🖼️</span>
+        <span style={{ color: '#888', fontSize: '13px' }}>Certificate unavailable</span>
       </div>
     );
   }
@@ -132,6 +140,7 @@ export default function ProjectViewPage() {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     async function loadProject() {
@@ -240,12 +249,29 @@ export default function ProjectViewPage() {
                       Open Full PDF
                     </button>
                   </div>
+                ) : imageError ? (
+                  <div style={{
+                    background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))',
+                    height: '180px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '32px' }}>🖼️</span>
+                    <span style={{ color: '#888', fontSize: '13px' }}>Certificate unavailable</span>
+                  </div>
                 ) : (
                   <img 
                     src={project.certificate_url} 
                     alt="Certificate"
                     className="w-full h-auto block cursor-pointer hover:opacity-90 transition-opacity"
                     onClick={() => setLightboxOpen(true)}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      setImageError(true);
+                    }}
                   />
                 )}
               </div>
