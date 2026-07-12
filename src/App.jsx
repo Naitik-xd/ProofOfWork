@@ -1,5 +1,6 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { supabase } from './lib/supabase';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
@@ -10,6 +11,16 @@ import ProjectViewPage from './pages/ProjectViewPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) navigate('/vault');
+    };
+    checkSession();
+  }, [navigate]);
+
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
