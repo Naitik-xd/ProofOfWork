@@ -194,20 +194,24 @@ export default function VaultPage() {
   const handleConfirmDelete = async () => {
     if (!deletingProject) return;
     try {
+      // Extract the file path correctly from the full public URL
       if (deletingProject.certificate_url) {
-        const parts = deletingProject.certificate_url.split('/certificates/');
-        if (parts.length > 1) {
-          const filePath = parts[1];
-          await supabase.storage.from('certificates').remove([filePath]);
+        const bucketPath = deletingProject.certificate_url.split('/storage/v1/object/public/certificates/')[1];
+        if (bucketPath) {
+          const { error: storageError } = await supabase.storage.from('certificates').remove([bucketPath]);
+          if (storageError) console.error('Storage deletion error:', storageError);
         }
       }
-      await supabase.from('projects').delete().eq('id', deletingProject.id);
+
+      const { error: dbError } = await supabase.from('projects').delete().eq('id', deletingProject.id);
+      if (dbError) throw dbError;
+
       setProjects(prev => prev.filter(p => p.id !== deletingProject.id));
       setDeletingProject(null);
-      showToast('Project deleted');
+      showToast('Project deleted successfully');
     } catch (err) {
-      console.error(err);
-      alert('Failed to delete project');
+      console.error('Delete error:', err);
+      showToast('Error deleting project');
     }
   };
 
@@ -270,9 +274,9 @@ export default function VaultPage() {
 
         // Delete old
         if (newCertUrl) {
-           const parts = newCertUrl.split('/certificates/');
-           if (parts.length > 1) {
-             await supabase.storage.from('certificates').remove([parts[1]]);
+           const bucketPath = newCertUrl.split('/storage/v1/object/public/certificates/')[1];
+           if (bucketPath) {
+             await supabase.storage.from('certificates').remove([bucketPath]);
            }
         }
         // Upload new
