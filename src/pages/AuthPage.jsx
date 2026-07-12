@@ -66,7 +66,9 @@ export default function AuthPage() {
     setError(null);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/vault' }
+      options: { 
+        redirectTo: 'https://my-proof-of-work.vercel.app/vault'
+      }
     });
     if (error) setError(error.message);
     setLoading(false);
