@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
@@ -10,6 +10,24 @@ import { supabase } from '../lib/supabase';
 export default function AuthPage() {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
+
+  useEffect(() => {
+    // Check if returning from OAuth redirect
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/vault')
+      }
+    })
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        navigate('/vault')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [navigate]);
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
