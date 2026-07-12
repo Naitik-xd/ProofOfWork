@@ -31,7 +31,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://pxbetfnkgbojplvbyxxn.supabase.co; connect-src 'self' https://pxbetfnkgbojplvbyxxn.supabase.co https://generativelanguage.googleapis.com; frame-src 'none'; object-src 'none';"
+          "value": "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://pxbetfnkgbojplvbyxxn.supabase.co; connect-src 'self' https://pxbetfnkgbojplvbyxxn.supabase.co https://generativelanguage.googleapis.com https://mcp.supabase.com; worker-src blob:; frame-src 'none'; object-src 'none';"
         },
         {
           "key": "Cross-Origin-Resource-Policy",
