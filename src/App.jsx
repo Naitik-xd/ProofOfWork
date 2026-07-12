@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
@@ -26,31 +27,34 @@ function App() {
   }, [navigate]);
 
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/auth" element={<AuthPage />} />
-      <Route path="/vault" element={
-        <ProtectedRoute>
-          <VaultPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/add" element={
-        <ProtectedRoute>
-          <AddProjectPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/project/:id" element={
-        <ProtectedRoute>
-          <ProjectViewPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/u/:username" element={<PublicProfilePage />} />
-      <Route path="/settings" element={
-        <ProtectedRoute>
-          <SettingsPage />
-        </ProtectedRoute>
-      } />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/vault" element={
+          <ProtectedRoute>
+            <VaultPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/add" element={
+          <ProtectedRoute>
+            <AddProjectPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/project/:id" element={
+          <ProtectedRoute>
+            <ProjectViewPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/u/:username" element={<PublicProfilePage />} />
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <SettingsPage />
+          </ProtectedRoute>
+        } />
+      </Routes>
+      <SpeedInsights />
+    </>
   );
 }
 
