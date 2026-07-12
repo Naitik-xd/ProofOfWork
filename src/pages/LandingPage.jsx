@@ -115,12 +115,12 @@ export default function LandingPage() {
           >
             Start Your Vault
           </a>
-          <a
-            href="/u/example"
-            className="px-8 py-3 rounded-full border border-[#6366f1] text-white font-semibold hover:bg-[#6366f1]/10 transition-all"
+          <button
+            onClick={() => window.open('/u/naitik.270810_c388', '_blank')}
+            className="px-8 py-3 rounded-full border border-[#6366f1] text-white font-semibold hover:bg-[#6366f1]/10 transition-all cursor-pointer"
           >
             View an Example
-          </a>
+          </button>
         </motion.div>
 
         <motion.div

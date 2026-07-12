@@ -84,6 +84,7 @@ export default function VaultPage() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,6 +93,13 @@ export default function VaultPage() {
       setUser(user);
       
       if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', user.id)
+          .single();
+        setProfile(profile);
+
         const { data } = await getUserProjects(user.id);
         setProjects(data || []);
       }
@@ -134,6 +142,27 @@ export default function VaultPage() {
             <span className="text-gray-400 text-sm hidden sm:inline font-medium">
               {user?.user_metadata?.username || user?.email}
             </span>
+            {profile && (
+              <button
+                onClick={() => window.open('/u/' + profile.username, '_blank')}
+                className="flex items-center gap-[6px] hover:bg-[rgba(255,255,255,0.05)] transition-all"
+                style={{
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  color: 'white',
+                  borderRadius: '8px',
+                  padding: '6px 14px',
+                  fontSize: '13px',
+                  background: 'transparent'
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                My Public Profile
+              </button>
+            )}
             <Link
               to="/add"
               className="px-4 py-2 text-sm rounded-lg bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white font-semibold shadow-lg hover:shadow-indigo-500/30 transition-shadow"
