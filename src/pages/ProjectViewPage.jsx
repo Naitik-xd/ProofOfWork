@@ -134,6 +134,10 @@ function FullPdfViewer({ url }) {
 }
 
 export default function ProjectViewPage() {
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="robots"]')
+    if (meta) meta.setAttribute('content', 'noindex, nofollow')
+  }, [])
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);

@@ -139,6 +139,10 @@ function ProjectCard({ project, index, profile }) {
 }
 
 export default function PublicProfilePage() {
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="robots"]')
+    if (meta) meta.setAttribute('content', 'noindex, nofollow')
+  }, [])
   const { username } = useParams();
   const navigate = useNavigate();
   

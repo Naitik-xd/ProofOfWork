@@ -29,6 +29,10 @@ function ToggleSwitch({ label, description, isOn, onToggle }) {
 }
 
 export default function SettingsPage() {
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="robots"]')
+    if (meta) meta.setAttribute('content', 'noindex, nofollow')
+  }, [])
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

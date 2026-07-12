@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { motion } from 'framer-motion';
@@ -56,6 +56,10 @@ function FloatingShapes() {
 }
 
 export default function LandingPage() {
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="robots"]')
+    if (meta) meta.setAttribute('content', 'noindex, nofollow')
+  }, [])
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-[#0a0a0f]">
       {/* 3D Background */}

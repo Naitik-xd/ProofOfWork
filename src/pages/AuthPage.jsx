@@ -8,6 +8,10 @@ import { supabase } from '../lib/supabase';
 
 
 export default function AuthPage() {
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="robots"]')
+    if (meta) meta.setAttribute('content', 'noindex, nofollow')
+  }, [])
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
 

@@ -43,6 +43,11 @@ export default function AddProjectPage() {
     });
   }, []);
 
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="robots"]')
+    if (meta) meta.setAttribute('content', 'noindex, nofollow')
+  }, [])
+
   // Handle File Selection
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -57,7 +62,16 @@ export default function AddProjectPage() {
     }
   };
 
+  const [lastEnhanced, setLastEnhanced] = useState(0);
+
   const handleEnhance = async () => {
+    const now = Date.now();
+    if (now - lastEnhanced < 10000) {
+      setEnhanceError('Please wait 10 seconds before enhancing again');
+      return;
+    }
+    setLastEnhanced(now);
+    
     if (!description.trim()) return;
     setEnhancing(true);
     setEnhanceError(null);
@@ -99,6 +113,30 @@ export default function AddProjectPage() {
     e.preventDefault();
     if (!validate()) return;
     
+    const sanitize = (str) => str.trim().replace(/<[^>]*>/g, '');
+    const sanitizedTitle = sanitize(title);
+    const sanitizedCompetitionName = sanitize(competitionName);
+    const sanitizedDescription = sanitize(description);
+    const sanitizedProjectUrl = projectUrl ? sanitize(projectUrl) : '';
+
+    if (sanitizedProjectUrl && !sanitizedProjectUrl.match(/^https?:\/\/.+/)) {
+      setSubmitError('Project URL must start with http:// or https://');
+      return;
+    }
+
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'application/pdf'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
+    if (!allowedTypes.includes(file.type)) {
+      setSubmitError('Only PNG, JPG, WEBP and PDF files are allowed');
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setSubmitError('File size must be under 10MB');
+      return;
+    }
+    
     setLoading(true);
     setSubmitError(null);
 
@@ -127,11 +165,11 @@ export default function AddProjectPage() {
         .from('projects')
         .insert({
           user_id: userId,
-          title,
-          competition_name: competitionName,
+          title: sanitizedTitle,
+          competition_name: sanitizedCompetitionName,
           date,
-          project_url: projectUrl || null,
-          description,
+          project_url: sanitizedProjectUrl || null,
+          description: sanitizedDescription,
           certificate_url
         });
 
