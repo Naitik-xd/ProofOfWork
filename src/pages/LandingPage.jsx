@@ -1,4 +1,5 @@
 import React, { useRef, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { motion } from 'framer-motion';
@@ -137,7 +138,9 @@ export default function LandingPage() {
             © 2026 Proof of Work. Built by Naitik.
           </div>
           <div className="flex items-center gap-6">
-            <a href="/privacy" className="text-[#555] text-[13px] hover:text-[#a5b4fc] transition-colors">Privacy Policy</a>
+            <Link to="/privacy" style={{ color: '#555', fontSize: '13px', textDecoration: 'none' }} className="hover:text-[#a5b4fc] transition-colors">
+              Privacy Policy
+            </Link>
             <span className="text-[#333] text-[13px] font-mono hidden sm:inline">my-proof-of-work.vercel.app</span>
           </div>
         </motion.div>

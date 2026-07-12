@@ -302,7 +302,9 @@ export default function PublicProfilePage() {
             © 2026 Proof of Work. Built by Naitik.
           </div>
           <div className="flex items-center gap-6">
-            <Link to="/privacy" className="text-[#555] text-[13px] hover:text-[#a5b4fc] transition-colors">Privacy Policy</Link>
+            <Link to="/privacy" style={{ color: '#555', fontSize: '13px', textDecoration: 'none' }} className="hover:text-[#a5b4fc] transition-colors">
+              Privacy Policy
+            </Link>
             <span className="text-[#333] text-[13px] font-mono hidden sm:inline">my-proof-of-work.vercel.app</span>
           </div>
         </div>
