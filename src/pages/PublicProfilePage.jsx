@@ -296,19 +296,30 @@ export default function PublicProfilePage() {
           )}
         </div>
 
-        {/* Footer */}
-        <div className="mt-auto px-8 py-6 border-t border-[rgba(255,255,255,0.06)] flex flex-col sm:flex-row justify-between items-center gap-4 bg-[rgba(10,10,15,0.8)] backdrop-blur-[12px]">
-          <div className="text-[#555] text-[13px]">
-            © 2026 Proof of Work. Built by Naitik.
-          </div>
-          <div className="flex items-center gap-6">
-            <Link to="/privacy" style={{ color: '#555', fontSize: '13px', textDecoration: 'none' }} className="hover:text-[#a5b4fc] transition-colors">
-              Privacy Policy
-            </Link>
-            <span className="text-[#333] text-[13px] font-mono hidden sm:inline">my-proof-of-work.vercel.app</span>
-          </div>
-        </div>
       </div>
+      <footer style={{
+        position: 'relative',
+        zIndex: 10,
+        padding: '16px 32px',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <span style={{ color: '#555', fontSize: '13px' }}>
+          © 2026 Proof of Work. Built by Naitik.
+        </span>
+        <Link to="/privacy" style={{ 
+          color: '#555', 
+          fontSize: '13px', 
+          textDecoration: 'none' 
+        }}
+        onMouseEnter={e => e.target.style.color = '#a5b4fc'}
+        onMouseLeave={e => e.target.style.color = '#555'}
+        >
+          Privacy Policy
+        </Link>
+      </footer>
     </div>
   );
 }

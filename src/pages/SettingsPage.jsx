@@ -263,6 +263,29 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      <footer style={{
+        position: 'relative',
+        zIndex: 10,
+        padding: '16px 32px',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <span style={{ color: '#555', fontSize: '13px' }}>
+          © 2026 Proof of Work. Built by Naitik.
+        </span>
+        <Link to="/privacy" style={{ 
+          color: '#555', 
+          fontSize: '13px', 
+          textDecoration: 'none' 
+        }}
+        onMouseEnter={e => e.target.style.color = '#a5b4fc'}
+        onMouseLeave={e => e.target.style.color = '#555'}
+        >
+          Privacy Policy
+        </Link>
+      </footer>
     </div>
   );
 }
