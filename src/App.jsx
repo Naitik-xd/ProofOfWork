@@ -9,6 +9,7 @@ import VaultPage from './pages/VaultPage';
 import AddProjectPage from './pages/AddProjectPage';
 import ProjectViewPage from './pages/ProjectViewPage';
 import PublicProfilePage from './pages/PublicProfilePage';
+import SettingsPage from './pages/SettingsPage';
 
 function App() {
   const navigate = useNavigate();
@@ -44,6 +45,11 @@ function App() {
         </ProtectedRoute>
       } />
       <Route path="/u/:username" element={<PublicProfilePage />} />
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <SettingsPage />
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 }
